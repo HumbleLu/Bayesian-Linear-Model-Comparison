@@ -13,12 +13,13 @@ tau<- 1
 iter = 10000
 
 ## Store trace (re-run FROM HERE)
-alpha.ess.trace<- c(alpha)
-beta.ess.trace<- beta
-tau.ess.trace<- c(tau)
+alpha.mh.trace<- c(alpha)
+beta.mh.trace<- beta
+tau.mh.trace<- c(tau)
 
 ## Step setting
 ##radius<- 25
+radius.beta<- 10
 radius.alpha<- 10
 radius.tau<- 10
 
@@ -40,38 +41,23 @@ for (i in 1:iter){
   }
   
   ## trace
-  alpha.ess.trace<- append(alpha.ess.trace, alpha)
+  alpha.mh.trace<- append(alpha.mh.trace, alpha)
   
-  ## update beta (Elliptical slice sampler)
-  ## chooseellipse
-  v<- rmvnorm(1, rep(0, 4), 1/alpha * diag(4))
-  
+  ## update beta (MH)
   ## threshold
   logy<- logp(beta, tau) + dmvnorm(beta, rep(0, 4), 1/alpha * diag(4), log = T) + log(runif(1))
   
   ## draw proposal
-  theta<- runif(1, 0, 2*pi)
-  theta.min<- theta - 2 * pi
-  theta.max<- theta
-  beta.prop<- beta * cos(theta) + v * sin(theta)
+  beta.prop<- beta + rmvnorm(1, rep(0, 4), radius.beta * diag(4))
   logbeta<- logp(beta.prop, tau) + dmvnorm(beta.prop, rep(0, 4), 1/alpha * diag(4), log = T)
   
   ## shrink bracket
-  while(logbeta <= logy){
-    if(theta < 0){
-      theta.min<- theta
-    }else{
-      theta.max<- theta
-    }
-    theta<- runif(1, theta.min, theta.max)
-    
-    beta.prop<- beta * cos(theta) + v * sin(theta)
-    logbeta<- logp(beta.prop, tau) + dmvnorm(beta.prop, rep(0, 4), 1/alpha * diag(4), log = T)
+  if(logbeta > logy){
+    beta<- beta.prop
   }
-  beta<- beta.prop
   
   ## trace
-  beta.ess.trace<- rbind(beta.ess.trace, beta)
+  beta.mh.trace<- rbind(beta.mh.trace, beta)
   
   ## update tau (MH)
   ## draw proposal
@@ -89,7 +75,5 @@ for (i in 1:iter){
   }
   
   ## trace
-  tau.ess.trace<- append(tau.ess.trace, tau)
+  tau.mh.trace<- append(tau.mh.trace, tau)
 }
-
-plot(tau.ess.trace[, 1], type = "l")
