@@ -10,9 +10,9 @@ beta<- c(0, 0, 0, 0)
 tau<- 1
 
 ## Sampling posterior distribution
-iter = 10000
+iter = 20000
 
-## Store trace (re-run FROM HERE)
+## Store trace
 alpha.mh.trace<- c(alpha)
 beta.mh.trace<- beta
 tau.mh.trace<- c(tau)
@@ -20,8 +20,8 @@ tau.mh.trace<- c(tau)
 ## Step setting
 ##radius<- 25
 radius.beta<- 10
-radius.alpha<- 10
-radius.tau<- 10
+radius.alpha<- 1
+radius.tau<- 1
 
 for (i in 1:iter){
   ## update alpha (MH)

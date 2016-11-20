@@ -10,17 +10,17 @@ beta<- c(0, 0, 0, 0)
 tau<- 1
 
 ## Sampling posterior distribution
-iter = 10000
+iter = 20000
 
-## Store trace (re-run FROM HERE)
+## Store trace
 alpha.ess.trace<- c(alpha)
 beta.ess.trace<- beta
 tau.ess.trace<- c(tau)
 
 ## Step setting
 ##radius<- 25
-radius.alpha<- 10
-radius.tau<- 10
+radius.alpha<- 1
+radius.tau<- 1
 
 for (i in 1:iter){
   ## update alpha (MH)
@@ -92,4 +92,3 @@ for (i in 1:iter){
   tau.ess.trace<- append(tau.ess.trace, tau)
 }
 
-plot(tau.ess.trace[, 1], type = "l")

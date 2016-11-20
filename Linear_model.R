@@ -13,5 +13,5 @@
 
 logp<- function(beta, tau){
   mu<- beta%*%t(cbind(1, education, women, prestige))
-  sum(dnorm(income, mu, 1/tau, log = TRUE))
+  sum(dnorm(income, mu, sqrt(1/tau), log = TRUE))
 }
